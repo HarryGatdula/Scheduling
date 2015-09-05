@@ -1,0 +1,28 @@
+NOTES
+
+Process class containes the attributes and methods for a single process/jobs
+
+Each CPU Scheduling Algorithms are contained in each class with the name Scheduling<algorithm>
+
+Scheduling algorithms class contains function to make a hypothetical Gannt Chart in the format:
+
+Take First-Come-First-Serve for example with inputs
+
+Name | AT | BT | PRIO
+     |    |    |
+A    | 0  | 5  | 1
+B    | 3  | 2  | 1
+C    | 5  | 3  | 1
+
+Returns a string representing the gannt chart
+
+A 0 5 B 5 7 C 6 9
+
+The string is pass on the JIJOFrame/output frame, and will be process to make a GUI for gannt chart and computations
+
+TO DO'S:
+
+Add other CPU Scheduling algorithms in the program
+Fix the USER INTERFACE - not so important but this is where the beauty comes :)
+
+just do "java MainActivity" to run the program
