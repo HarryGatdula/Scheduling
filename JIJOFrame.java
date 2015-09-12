@@ -68,10 +68,7 @@ class ComputationBlock extends JPanel {
 	JLabel lblIndiComp = new JLabel();
 	public ComputationBlock(int nOfJobs) {
 		setLayout(new FlowLayout());
-		setBackground(Color.RED);
-		lblaverage.setText("AVE = 9.82");
-		add(lblIndiComp);
-		add(lblaverage);
+		setBackground(Color.GRAY);
 		setPreferredSize(new Dimension(200, 600));
 	}
 }
@@ -82,34 +79,47 @@ public class JIJOFrame extends JFrame {
 	final int WIDTH = 640;
 	final int HEIGHT = 480;
 
-	Container con = getContentPane();
-	JobInput[] jobs = new JobInput[50];
+	//The main container
+	JPanel con = new JPanel();
+
+	//The container for the gannt chart
 	JPanel pnlGanntChart = new JPanel();
+	JScrollPane scrollGanntChart = new JScrollPane(pnlGanntChart);
+
+	//The container for computations
 	JPanel pnlComputations = new JPanel();
-
-
-	ComputationBlock turnAroundTime = new ComputationBlock(50);
-	ComputationBlock waitingTime = new ComputationBlock(50);
-
-	JButton Test = new JButton("Mawawala Dapat");
+	JScrollPane scrollComputations = new JScrollPane(pnlComputations);
 
 	public JIJOFrame() {
+		//JFrame constructor
 		super("JIJO - A CPU Scheduling Algorithms Program");
-		setSize(640, 500);	
-		setLayout(new GridLayout(2, 1, 5, 5));
-		con.add(Test);
-		pnlGanntChart.setLayout(new FlowLayout());
-		pnlComputations.setLayout(new GridLayout(1, 2, 5, 5));
+		setSize(640, 525);	
 
+		//Sets the layout
+		con.setLayout(new GridLayout(2, 1, 5, 5));
+
+		//Adds the scrolls
+		con.add(scrollGanntChart);
+		con.add(scrollComputations);
+
+		//Sets the gannt chart container
+		pnlGanntChart.setLayout(new FlowLayout());
+		pnlGanntChart.setPreferredSize(new Dimension(500, 2000));
+
+		//Sets the computations container
+		pnlComputations.setLayout(new GridLayout(1, 2, 5, 5));
+		pnlComputations.setPreferredSize(new Dimension(500, 2000));
+
+		//Sets the Position of the Window
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int dx = (int)(screenSize.getWidth() - 940)/2 + 300 + 5;
+		int dx = (int)(screenSize.getWidth() - 940)/2 + 340 + 5;
 		int dy = (int)(screenSize.getHeight() - 500)/2;
 		setLocation(dx, dy);
 
-		con.add(pnlGanntChart);
-		con.add(pnlComputations);
+		this.add(con);
 
 	}
+
 
 	public void makeGanntChart(ArrayList<Process> process, String strAlgorithm) {
 		clearWindow();
@@ -121,7 +131,13 @@ public class JIJOFrame extends JFrame {
 			gannt = SchedulingFCFS.fcfs(process);
 		if (strAlgorithm.equals("SJF"))
 			gannt = SchedulingSJF.doSJF(process);
-
+		if (strAlgorithm.equals("PP"))
+			gannt = SchedulingPP.prio(process);
+		if (strAlgorithm.equals("P-PRIO"))
+			gannt = SchedulingPPrio.pprio(process);
+		if (strAlgorithm.equals("SRTF"))
+			gannt = SchedulingSRTF.srtf(process);
+		
 		//Splits the gannt chart for processing
 		String[] data = gannt.split(" ");
 
@@ -134,24 +150,38 @@ public class JIJOFrame extends JFrame {
 		}
 		
 		//Does the computation
-		doComputation(process, data);
+		//doComputation(process, data);
 
-		add(pnlGanntChart);
-		add(pnlComputations);
+		con.add(scrollComputations);
+		con.add(scrollComputations);
+		doComputation(process, data);
 
 	}
 
 	public void clearWindow() {
 		pnlGanntChart.removeAll();
 		pnlComputations.removeAll();
-		con.removeAll();
-		con.revalidate();
-		con.repaint();
+		getContentPane().repaint();
+		validate();
+		pack();
+		setVisible(true);
+		this.setSize(640, 525);
 	}
 
 	public void doComputation(ArrayList<Process> process, String[] data) {
 		String strTTComputation = "";
 		String strWTComputation = "";
+
+		double ttTotal = 0;
+		double wtTotal = 0;
+
+		JLabel[] tt = new JLabel[process.size()];
+
+		JLabel[] wt = new JLabel[process.size()];
+
+		//Computations Blocks
+		ComputationBlock turnAroundTime = new ComputationBlock(process.size());
+		ComputationBlock waitingTime = new ComputationBlock(process.size());
 
 		for (int i = 0, n = process.size(); i < n; i++) {
 			String name = process.get(i).getName();
@@ -162,14 +192,31 @@ public class JIJOFrame extends JFrame {
 					break;
 				}
 			}
+
 			double resultTT = endTime - process.get(i).getArrivalTime();
 			double resultWT = resultTT - process.get(i).getBurstTime();
-			strTTComputation += process.get(i).getName() + " " + endTime + " - " + process.get(i).getArrivalTime() + " = " + resultTT + "\n";
-			strWTComputation += process.get(i).getName() + " " + resultTT + " - " + process.get(i).getBurstTime() + " = " + resultWT + "\n";
+
+			ttTotal += resultTT;
+			wtTotal += resultWT;
+
+			tt[i] = new JLabel(process.get(i).getName() + " " + endTime + " - " + process.get(i).getArrivalTime() + " = " + resultTT);
+			wt[i] = new JLabel(process.get(i).getName() + " " + resultTT + " - " + process.get(i).getBurstTime() + " = " + resultWT);
+			tt[i].setPreferredSize(new Dimension(300, 25));
+			wt[i].setPreferredSize(new Dimension(300, 25));
+
 		}
 
-		turnAroundTime.lblIndiComp.setText(strTTComputation);
-		waitingTime.lblIndiComp.setText(strWTComputation);
+		JLabel lblTTave = new JLabel("AVE: " + ttTotal/process.size());
+		JLabel lblWTave = new JLabel("AVE: " + wtTotal/process.size());
+
+		turnAroundTime.add(lblTTave);
+		waitingTime.add(lblWTave);
+
+		for (int i = 0, n = process.size(); i < n; i++) {
+			turnAroundTime.add(tt[i]);
+			waitingTime.add(wt[i]);
+		}
+
 		pnlComputations.add(turnAroundTime);
 		pnlComputations.add(waitingTime);
 	}

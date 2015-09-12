@@ -1,15 +1,15 @@
 /*
-	SJF
-	Shortest job first algorithm
+	Prio
+	Priority Algorithm
 */
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Arrays;
 
-public class SchedulingSJF {
+public class SchedulingPP {
 	
 	//Accepts an arraylist of Process Objects and returns a String represeting Gannt Chart
-	public static String doSJF(ArrayList<Process> process) {
+	public static String prio(ArrayList<Process> process) {
 
 		//Queue for the processes in the waiting state
 		ArrayList<Process> queue = new ArrayList<Process>();
@@ -18,10 +18,10 @@ public class SchedulingSJF {
 		double curTime = 0;
 
 		//The Return String / Gant Chart
-		String sjf = new String("");
+		String prio = new String("");
 
 		//Sorts the Processes by ArrivalTime
-		SchedulingTools.sortByBurstTime(process);
+		SchedulingTools.sortByPriority(process);
 		SchedulingTools.sortByArrivalTime(process);
 
 		int k = 0;
@@ -37,24 +37,24 @@ public class SchedulingSJF {
 				}
 
 				if (queue.size() == 0) {
-					sjf += "IDLE " + curTime + " ";
+					prio += "IDLE " + curTime + " ";
 					curTime = nextProcessTime;
-					sjf += curTime + " ";
+					prio += curTime + " ";
 					queue.add(process.get(k));
 				}
 			}
 
-			SchedulingTools.sortByBurstTime(queue);
+			SchedulingTools.sortByPriority(queue);
 
-			sjf += queue.get(0).getName() + " " + curTime + " ";
+			prio += queue.get(0).getName() + " " + curTime + " ";
 			curTime += queue.get(0).getBurstTime();
-			sjf += curTime + " ";
+			prio += curTime + " ";
 
 			queue.remove(0);
 
 		}
-		System.out.println(sjf);
-		return sjf; //returns the fcfs string
+		//System.out.println(sjf);
+		return prio; //returns the fcfs string
 
 	}  //end of fcfs()
 }

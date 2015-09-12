@@ -24,6 +24,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.JPanel;
 
 public class InputWindow extends JFrame implements ActionListener, ItemListener {
 
@@ -31,20 +32,22 @@ public class InputWindow extends JFrame implements ActionListener, ItemListener 
 	final int MAX_JOBS = 50;
 
 	//The Jobs inputs Class
+	JPanel con = new JPanel();
+	JScrollPane scroll = new JScrollPane(con);
 	JobInput[] jobs = new JobInput[MAX_JOBS];
 	JButton btnMake = new JButton("MAKE");
 	JButton btnClear = new JButton("CLEAR");
 
-	String[] strAlgos = {"FCFS", "SJF"};
+	String[] strAlgos = {"FCFS", "SJF", "PP", "P-PRIO", "SRTF"};
 
 	JComboBox cboAlgo = new JComboBox(strAlgos);
 
 	//The output Window
 	JIJOFrame frame = new JIJOFrame();
 
-	JLabel lblInputName = new JLabel("Job Name");
-	JLabel lblInputAT = new JLabel("AT");
-	JLabel lblInputBT = new JLabel("BT");
+	JLabel lblInputName = new JLabel("Job Name                  ");
+	JLabel lblInputAT = new JLabel("AT         ");
+	JLabel lblInputBT = new JLabel("BT           ");
 	JLabel lblInputPrio = new JLabel("Prio");
 
 	//InputWindow Constructor, Accepts a parameter of int
@@ -53,8 +56,11 @@ public class InputWindow extends JFrame implements ActionListener, ItemListener 
 
 		super("Input Window - JIJOFrame");
 		//Set ups the input window
-		setSize(300, 500);
-		setLayout(new FlowLayout());
+		setSize(340, 525);
+		con.setLayout(new FlowLayout());
+		con.setPreferredSize(new Dimension(300, 2000));
+		con.setBackground(Color.GRAY);
+		add(scroll);
 		lblInputName.setForeground(Color.WHITE);
 		lblInputAT.setForeground(Color.WHITE);
 		lblInputBT.setForeground(Color.WHITE);
@@ -73,24 +79,31 @@ public class InputWindow extends JFrame implements ActionListener, ItemListener 
 
 		//Adds the button make
 		btnMake.addActionListener(this);
-		add(btnMake);
+		con.add(btnMake);
+		btnMake.setToolTipText("Make the Gannt Chart");
 
 		//Adds the clear Button
 		btnClear.addActionListener(this);
-		add(btnClear);
+		con.add(btnClear);
+		btnClear.setToolTipText("Clear the input Fields");
 
-		add(cboAlgo);
+		con.add(cboAlgo);
+		cboAlgo.setToolTipText("Choose a Scheduling Algorithms");
 
 		//Adds the labels for input Fields 
-		this.add(lblInputName);
-		this.add(lblInputAT);
-		this.add(lblInputBT);
-		this.add(lblInputPrio);
+		con.add(lblInputName);
+		lblInputName.setToolTipText("The name of the Job");
+		con.add(lblInputAT);
+		lblInputAT.setToolTipText("Arrival Time");
+		con.add(lblInputBT);
+		lblInputBT.setToolTipText("Burst Time");
+		con.add(lblInputPrio);
+		lblInputPrio.setToolTipText("The priority");
 
 		//Adds the Job Input
 		for (int i = 0; i < MAX_JOBS; i++) {
 			jobs[i] = new JobInput();
-			add(jobs[i]);
+			con.add(jobs[i]);
 		}
 
 	}
@@ -136,6 +149,12 @@ public class InputWindow extends JFrame implements ActionListener, ItemListener 
 				frame.makeGanntChart(processes, "FCFS");
 			else if (cboAlgo.getSelectedItem() == "SJF")
 				frame.makeGanntChart(processes, "SJF");
+			else if (cboAlgo.getSelectedItem() == "PP")
+				frame.makeGanntChart(processes, "PP");
+			else if (cboAlgo.getSelectedItem() == "P-PRIO")
+				frame.makeGanntChart(processes, "P-PRIO");
+			else if (cboAlgo.getSelectedItem() == "SRTF")
+				frame.makeGanntChart(processes, "SRTF");
 		} //end (if source == btnMake)
 
 		//If the Clear button is clicked, clears
