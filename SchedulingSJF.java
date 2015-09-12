@@ -21,6 +21,7 @@ public class SchedulingSJF {
 		String sjf = new String("");
 
 		//Sorts the Processes by ArrivalTime
+		SchedulingTools.sortByBurstTime(process);
 		SchedulingTools.sortByArrivalTime(process);
 
 		int k = 0;

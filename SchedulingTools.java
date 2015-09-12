@@ -31,4 +31,16 @@ public class SchedulingTools {
 		}
 	} //end of SortByBurstTime
 
+	public static void sortByPriority(ArrayList<Process> process) {
+		for (int i = 0, n = process.size(); i < n-1; i++) {
+			for (int k = i+1; k < n; k++) {
+				if (process.get(i).getPriority() > process.get(k).getPriority()) {
+					Process temp = process.get(i);
+					process.set(i, process.get(k));
+					process.set(k, temp);
+				}
+			}
+		}
+	}
+
 }

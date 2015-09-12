@@ -21,9 +21,13 @@ public class JobInput extends JPanel {
 	public JobInput() {
 		setLayout(new FlowLayout());
 		this.add(name);
+		name.setToolTipText("Name of the Job");
 		this.add(at);
+		at.setToolTipText("Arrival Time");
 		this.add(bt);
+		bt.setToolTipText("Burst Time");
 		this.add(prio);
+		prio.setToolTipText("Priority");
 		this.setBackground(Color.GRAY);
 	}
 
